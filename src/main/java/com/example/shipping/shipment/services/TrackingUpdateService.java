@@ -25,4 +25,11 @@ public class TrackingUpdateService {
         s.markDelivered(at);
         repo.save(s);
     }
+
+    @Transactional
+    public void cancel(UUID id, String reason) {
+        var s = repo.findById(id).orElseThrow();
+        s.cancel(reason);
+        repo.save(s);
+    }
 }

@@ -1,4 +1,4 @@
-package com.example.shipping.shipment.infra.out.external.shippo;
+package com.example.shipping.shipment.infra.shippo;
 
 public class ShippoClient {
     private final String apiKey;

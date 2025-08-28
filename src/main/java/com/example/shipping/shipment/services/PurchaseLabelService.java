@@ -1,6 +1,6 @@
 package com.example.shipping.shipment.services;
 
-import com.example.shipping.shipment.infra.out.external.shippo.ShippoLabelAdapter;
+import com.example.shipping.shipment.infra.shippo.ShippoLabelAdapter;
 import com.example.shipping.shipment.infra.out.persistence.ShipmentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,0 +1,19 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports: ["9090:9090"]
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    # Let the container resolve your host as "host.docker.internal"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    ports: ["3000:3000"]
+    environment:
+      # change this in real life
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on: [prometheus]
