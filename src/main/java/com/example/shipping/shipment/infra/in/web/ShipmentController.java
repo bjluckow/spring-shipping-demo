@@ -2,17 +2,17 @@ package com.example.shipping.shipment.infra.in.web;
 
 import com.example.shipping.shipment.api.commands.CreateShipmentCommand;
 import com.example.shipping.shipment.api.commands.PurchaseLabelCommand;
+import com.example.shipping.shipment.api.commands.RateShopCommand;
 import com.example.shipping.shipment.api.commands.UpdateStatusCommand;
 import com.example.shipping.shipment.api.dto.ShipmentView;
 import com.example.shipping.shipment.api.queries.GetShipmentStatusQuery;
 import com.example.shipping.shipment.api.queries.ShipmentStatusView;
 import com.example.shipping.shipment.domain.model.Shipment;
 import com.example.shipping.shipment.infra.out.persistence.ShipmentRepository;
-import com.example.shipping.shipment.services.CreateShipmentService;
-import com.example.shipping.shipment.services.PurchaseLabelService;
-import com.example.shipping.shipment.services.TrackingUpdateService;
+import com.example.shipping.shipment.services.*;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -20,16 +20,14 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/shipments")
+@RequiredArgsConstructor
 public class ShipmentController {
     private final CreateShipmentService create;
+    private final UpdateStatusService update;
     private final PurchaseLabelService purchase;
     private final TrackingUpdateService tracking;
     private final ShipmentRepository repo;
-
-    public ShipmentController(CreateShipmentService create, PurchaseLabelService purchase,
-                              TrackingUpdateService tracking, ShipmentRepository repo) {
-        this.create = create; this.purchase = purchase; this.tracking = tracking; this.repo = repo;
-    }
+    private final RateShopService rateShop;
 
     @Operation(summary = "Create shipment")
     @PostMapping
@@ -55,14 +53,7 @@ public class ShipmentController {
     @Operation(summary = "Partially update shipment (status, etc.)")
     @PatchMapping("/{id}")
     public void patch(@PathVariable UUID id, @RequestBody @Valid UpdateStatusCommand cmd) {
-        // Monotonic timestamp if provided; fallback to now
-        Instant at = cmd.at() != null ? cmd.at() : Instant.now();
-        switch (cmd.status()) {
-            case IN_TRANSIT -> tracking.markInTransit(id, at);
-            case DELIVERED  -> tracking.markDelivered(id, at);
-            case CANCELLED  -> tracking.cancel(id, "manual"); // if you expose this in your service
-            default -> throw new IllegalArgumentException("Unsupported status via PATCH: " + cmd.status());
-        }
+        update.handle(id, cmd);
     }
 
     @GetMapping("/{id}/status")
@@ -71,5 +62,13 @@ public class ShipmentController {
         var q = new GetShipmentStatusQuery(id);
         Shipment s = repo.findById(q.shipmentId()).orElseThrow();
         return new ShipmentStatusView(s.id(), s.status());
+    }
+
+
+
+    @io.swagger.v3.oas.annotations.Operation(summary = "Run rate shopping; transition to RATES_AVAILABLE")
+    @PostMapping("/{id}/rates")
+    public void rateShop(@PathVariable UUID id, @RequestBody(required = false) RateShopCommand cmd) {
+        rateShop.handle(id, cmd == null ? new RateShopCommand(null, null) : cmd);
     }
 }

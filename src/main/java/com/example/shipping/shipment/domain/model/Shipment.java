@@ -67,33 +67,47 @@ public class Shipment {
     // Commands (idempotent + invariant-checked)
     public void ratesReceived() {
         transitionTo(Status.RATES_AVAILABLE);
-        emit(new RatesAvailable(id, Instant.now()));
     }
 
+//    public void labelPurchased(String carrierService, String labelUrl, String trackingCode) {
+//        this.carrierService = carrierService; this.labelUrl = labelUrl; this.trackingCode = trackingCode;
+//        transitionTo(Status.LABEL_PURCHASED);
+//        emit(new LabelPurchased(id, carrierService, trackingCode, Instant.now()));
+//    }
+
     public void labelPurchased(String carrierService, String labelUrl, String trackingCode) {
-        this.carrierService = carrierService; this.labelUrl = labelUrl; this.trackingCode = trackingCode;
-        transitionTo(Status.LABEL_PURCHASED);
+        // 1) validate without mutating
+        if (!status.canTransitionTo(Status.LABEL_PURCHASED)) {
+            throw new InvalidTransitionException("Cannot transition " + status + " -> LABEL_PURCHASED");
+        }
+
+        // 2) enqueue specific event FIRST
         emit(new LabelPurchased(id, carrierService, trackingCode, Instant.now()));
+
+        // 3) apply state + enqueue generic status change (here or inside transitionTo)
+        this.carrierService = carrierService;
+        this.labelUrl = labelUrl;
+        this.trackingCode = trackingCode;
+
+        transitionTo(Status.LABEL_PURCHASED);                 // if this emits a generic event
+        // OR, if transitionTo() does not emit, do it explicitly:
+        // emit(new ShipmentStatusChanged(id, Status.LABEL_PURCHASED, Instant.now()));
     }
 
     public void markInTransit(Instant checkpointTime) {
         if (isStale(checkpointTime)) return;
         this.lastCheckpointAt = checkpointTime;
         transitionTo(Status.IN_TRANSIT);
-        emit(new ShipmentStatusChanged(id, Status.IN_TRANSIT, Instant.now()));
     }
 
     public void markDelivered(Instant checkpointTime) {
         if (isStale(checkpointTime)) return;
         this.lastCheckpointAt = checkpointTime;
         transitionTo(Status.DELIVERED);
-        emit(new ShipmentStatusChanged(id, Status.DELIVERED, Instant.now()));
     }
 
     public void cancel(String reason) {
-        transitionTo(Status.CANCELLED);
-        // reuse ShipmentStatusChanged for brevity
-        emit(new ShipmentStatusChanged(id, Status.CANCELLED, Instant.now()));
+        transitionTo(Status.CANCELLED, reason);
     }
 
     // Helpers
@@ -101,12 +115,17 @@ public class Shipment {
         return lastCheckpointAt != null && checkpoint != null && checkpoint.isBefore(lastCheckpointAt);
     }
 
-    private void transitionTo(Status target) {
+    private void transitionTo(Status newStatus) {
+        transitionTo(newStatus, null);
+    }
+
+    private void transitionTo(Status target, String reason) {
         if (status == target) return; // idempotent duplicate
         if (!status.canTransitionTo(target)) {
             throw new InvalidTransitionException("Cannot transition " + status + " -> " + target);
         }
         this.status = target;
+        emit(new ShipmentStatusChanged(id, target, Instant.now(), reason)); // <— generic event
     }
 
     private void emit(Object event) { events.add(event); }

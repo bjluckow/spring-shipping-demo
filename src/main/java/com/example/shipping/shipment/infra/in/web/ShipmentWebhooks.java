@@ -1,11 +1,14 @@
 package com.example.shipping.shipment.infra.in.web;
 
+import com.example.shipping.shipment.api.commands.RateShopCommand;
 import com.example.shipping.shipment.api.commands.ShippoTrackingUpdateCommand;
 import com.example.shipping.shipment.domain.model.Status;
+import com.example.shipping.shipment.services.RateShopService;
 import com.example.shipping.shipment.services.TrackingUpdateService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,15 +22,13 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/webhooks/shippo")
+@RequiredArgsConstructor
 public class ShipmentWebhooks {
 
     private final TrackingUpdateService tracking;
+    private final RateShopService rateShop;
 
-    public ShipmentWebhooks(TrackingUpdateService tracking) {
-        this.tracking = tracking;
-    }
-
-    // Minimal payload you can expand to match Shippo's real schema
+     // Minimal payload you can expand to match Shippo's real schema
     public record ShippoEvent(@NotNull String event,
                               @NotNull Data data) {
         public record Data(@NotNull String tracking_number,
@@ -74,5 +75,14 @@ public class ShipmentWebhooks {
 
     private Instant parseInstant(String s) {
         return (s == null || s.isBlank()) ? Instant.now() : Instant.parse(s);
+    }
+
+    @io.swagger.v3.oas.annotations.Operation(summary = "Provider webhook: rates available")
+    @PostMapping("/rates")
+    @ResponseStatus(org.springframework.http.HttpStatus.ACCEPTED)
+    public void ratesReady(@RequestBody Map<String, Object> payload) {
+        // resolve shipmentId from payload
+        var shipmentId = java.util.UUID.fromString(payload.get("shipment_id").toString());
+        rateShop.handle(shipmentId, new RateShopCommand(null, null));
     }
 }

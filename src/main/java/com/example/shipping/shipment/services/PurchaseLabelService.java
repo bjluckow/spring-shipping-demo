@@ -2,19 +2,17 @@ package com.example.shipping.shipment.services;
 
 import com.example.shipping.shipment.infra.shippo.ShippoLabelAdapter;
 import com.example.shipping.shipment.infra.out.persistence.ShipmentRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class PurchaseLabelService {
     private final ShipmentRepository repo;
     private final ShippoLabelAdapter shippo;
-
-    public PurchaseLabelService(ShipmentRepository repo, ShippoLabelAdapter shippo) {
-        this.repo = repo; this.shippo = shippo;
-    }
 
     @Transactional
     public void handle(UUID shipmentId, String carrierService) {
