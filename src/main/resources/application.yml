@@ -1,0 +1,24 @@
+spring:
+  datasource: { url: jdbc:h2:mem:testdb, driverClassName: org.h2.Driver }
+  jpa:
+    hibernate.ddl-auto: update
+    open-in-view: false
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+  show-actuator: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus,httpexchanges,auditevents,domainevents
+  endpoint:
+    auditevents:
+      enabled: true
+  httpexchanges:
+    recording:
+      enabled: true
