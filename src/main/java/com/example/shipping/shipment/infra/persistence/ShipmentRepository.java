@@ -1,4 +1,4 @@
-package com.example.shipping.shipment.infra.out.persistence;
+package com.example.shipping.shipment.infra.persistence;
 
 import com.example.shipping.shipment.domain.model.Shipment;
 import org.springframework.data.jpa.repository.JpaRepository;

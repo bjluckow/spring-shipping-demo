@@ -1,4 +1,4 @@
-package com.example.shipping.shipment.api.dto;
+package com.example.shipping.shipment.dto.view;
 
 import com.example.shipping.shipment.domain.model.Status;
 

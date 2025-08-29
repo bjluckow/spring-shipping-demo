@@ -1,7 +1,9 @@
 // shipment/infra/actuator/DomainEventsEndpoint.java
 package com.example.shipping.shipment.infra.actuator;
 
-import com.example.shipping.shipment.api.events.*;
+import com.example.shipping.shipment.domain.events.LabelPurchased;
+import com.example.shipping.shipment.domain.events.ShipmentCreated;
+import com.example.shipping.shipment.domain.events.ShipmentStatusChanged;
 import org.springframework.boot.actuate.endpoint.annotation.*;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;

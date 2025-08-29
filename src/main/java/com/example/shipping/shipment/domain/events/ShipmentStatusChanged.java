@@ -1,4 +1,4 @@
-package com.example.shipping.shipment.api.events;
+package com.example.shipping.shipment.domain.events;
 
 import com.example.shipping.shipment.domain.model.Status;
 

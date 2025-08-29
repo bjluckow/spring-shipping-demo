@@ -1,9 +1,9 @@
 package com.example.shipping.shipment.services;
 
 
-import com.example.shipping.shipment.api.commands.CreateShipmentCommand;
+import com.example.shipping.shipment.dto.commands.CreateShipmentCommand;
 import com.example.shipping.shipment.domain.model.Shipment;
-import com.example.shipping.shipment.infra.out.persistence.ShipmentRepository;
+import com.example.shipping.shipment.infra.persistence.ShipmentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

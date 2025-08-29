@@ -1,21 +1,20 @@
-package com.example.shipping.shipment.infra.in.web;
+package com.example.shipping.shipment.infra.web;
 
-import com.example.shipping.shipment.api.commands.CreateShipmentCommand;
-import com.example.shipping.shipment.api.commands.PurchaseLabelCommand;
-import com.example.shipping.shipment.api.commands.RateShopCommand;
-import com.example.shipping.shipment.api.commands.UpdateStatusCommand;
-import com.example.shipping.shipment.api.dto.ShipmentView;
-import com.example.shipping.shipment.api.queries.GetShipmentStatusQuery;
-import com.example.shipping.shipment.api.queries.ShipmentStatusView;
+import com.example.shipping.shipment.dto.commands.CreateShipmentCommand;
+import com.example.shipping.shipment.dto.commands.PurchaseLabelCommand;
+import com.example.shipping.shipment.dto.commands.RateShopCommand;
+import com.example.shipping.shipment.dto.commands.UpdateStatusCommand;
+import com.example.shipping.shipment.dto.view.ShipmentView;
+import com.example.shipping.shipment.dto.queries.GetShipmentStatusQuery;
+import com.example.shipping.shipment.dto.queries.ShipmentStatusView;
 import com.example.shipping.shipment.domain.model.Shipment;
-import com.example.shipping.shipment.infra.out.persistence.ShipmentRepository;
+import com.example.shipping.shipment.infra.persistence.ShipmentRepository;
 import com.example.shipping.shipment.services.*;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
 import java.util.UUID;
 
 @RestController

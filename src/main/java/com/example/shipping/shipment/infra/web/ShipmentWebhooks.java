@@ -1,7 +1,6 @@
-package com.example.shipping.shipment.infra.in.web;
+package com.example.shipping.shipment.infra.web;
 
-import com.example.shipping.shipment.api.commands.RateShopCommand;
-import com.example.shipping.shipment.api.commands.ShippoTrackingUpdateCommand;
+import com.example.shipping.shipment.dto.commands.RateShopCommand;
 import com.example.shipping.shipment.domain.model.Status;
 import com.example.shipping.shipment.services.RateShopService;
 import com.example.shipping.shipment.services.TrackingUpdateService;

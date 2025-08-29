@@ -1,11 +1,9 @@
 package com.example.shipping.shipment.domain.model;
 
-import com.example.shipping.shipment.api.events.LabelPurchased;
-import com.example.shipping.shipment.api.events.RatesAvailable;
-import com.example.shipping.shipment.api.events.ShipmentCreated;
-import com.example.shipping.shipment.api.events.ShipmentStatusChanged;
+import com.example.shipping.shipment.domain.events.LabelPurchased;
+import com.example.shipping.shipment.domain.events.ShipmentCreated;
+import com.example.shipping.shipment.domain.events.ShipmentStatusChanged;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.AfterDomainEventPublication;

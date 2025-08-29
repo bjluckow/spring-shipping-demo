@@ -1,7 +1,9 @@
-package com.example.shipping.shipment.listeners;
+package com.example.shipping.shipment.domain.listeners;
 
 
-import com.example.shipping.shipment.api.events.*;
+import com.example.shipping.shipment.domain.events.LabelPurchased;
+import com.example.shipping.shipment.domain.events.ShipmentCreated;
+import com.example.shipping.shipment.domain.events.ShipmentStatusChanged;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;

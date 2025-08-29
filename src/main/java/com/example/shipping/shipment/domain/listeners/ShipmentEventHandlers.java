@@ -1,9 +1,8 @@
-package com.example.shipping.shipment.listeners;
+package com.example.shipping.shipment.domain.listeners;
 
-import com.example.shipping.shipment.api.events.*;
-import com.example.shipping.shipment.api.events.LabelPurchased;
-import com.example.shipping.shipment.api.events.ShipmentCreated;
-import com.example.shipping.shipment.api.events.ShipmentStatusChanged;
+import com.example.shipping.shipment.domain.events.LabelPurchased;
+import com.example.shipping.shipment.domain.events.ShipmentCreated;
+import com.example.shipping.shipment.domain.events.ShipmentStatusChanged;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.transaction.event.TransactionPhase;

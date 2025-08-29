@@ -1,4 +1,4 @@
-package com.example.shipping.shipment.api.commands;
+package com.example.shipping.shipment.dto.commands;
 
 import jakarta.validation.constraints.NotBlank;
 

@@ -1,4 +1,4 @@
-package com.example.shipping.shipment.api.queries;
+package com.example.shipping.shipment.dto.queries;
 
 import com.example.shipping.shipment.domain.model.Status;
 import java.util.UUID;
